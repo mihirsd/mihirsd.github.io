@@ -1,43 +1,21 @@
----
-import TargetCursor from './TargetCursor';
-
-let isMobile = false;
-if (typeof window !== 'undefined') {
-  isMobile =
-    /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      window.navigator.userAgent
-    );
-}
----
-
 <div class="fixed inset-0 z-10 flex items-center justify-center">
-  {
-    !isMobile && (
-      <TargetCursor
-        spinDuration={2}
-        hideDefaultCursor={true}
-        className="pointer-events-none"
-        client:load
-      />
-    )
-  }
   <div
     class="pointer-events-auto flex flex-col items-center justify-center space-y-6">
     <div>
       <h1
-        class="cursor-target text-7xl font-extrabold tracking-tight text-white drop-shadow-lg">
+        class="text-7xl font-extrabold tracking-tight text-white drop-shadow-lg">
         Mihir Desai
       </h1>
     </div>
     <div>
-      <p class="cursor-target text-3xl font-semibold text-zinc-300 drop-shadow">
+      <p class="text-3xl font-semibold text-zinc-300 drop-shadow">
         Software Engineer
       </p>
     </div>
     <div class="mt-4 flex space-x-12">
       <a
         href="https://github.com/mihirsd"
-        class="cursor-target transition hover:text-[#8257e6]"
+        class="transition hover:text-[#8257e6]"
         aria-label="GitHub"
         target="_blank"
         rel="noopener">
@@ -60,7 +38,7 @@ if (typeof window !== 'undefined') {
       </a>
       <a
         href="https://linkedin.com/in/mihirsd"
-        class="cursor-target transition hover:text-[#0a66c2]"
+        class="transition hover:text-[#0a66c2]"
         aria-label="LinkedIn"
         target="_blank"
         rel="noopener">
@@ -84,7 +62,7 @@ if (typeof window !== 'undefined') {
       </a>
       <a
         href="mailto:mihir@mihirdesai.net"
-        class="cursor-target transition hover:text-[#e63946]"
+        class="transition hover:text-[#e63946]"
         aria-label="Email">
         <svg
           xmlns="http://www.w3.org/2000/svg"
