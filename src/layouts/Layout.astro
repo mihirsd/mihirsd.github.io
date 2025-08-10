@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -15,7 +17,7 @@ const {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="bg-zinc-900 text-zinc-100">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -44,34 +46,3 @@ const {
     <slot />
   </body>
 </html>
-
-<style is:global>
-  @font-face {
-    font-family: 'InterVariable';
-    src: url('/fonts/InterVariable.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  :root {
-    --zinc-100: #f4f4f5;
-    --zinc-400: #a1a1aa;
-    --zinc-800: #27272a;
-    --zinc-900: #18181b;
-  }
-
-  *,
-  *::before,
-  *::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  html {
-    font-family: 'InterVariable', system-ui, sans-serif;
-    background: var(--zinc-900);
-    color: var(--zinc-100);
-  }
-</style>
