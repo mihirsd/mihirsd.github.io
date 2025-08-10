@@ -322,28 +322,59 @@ export default function Dither({
   // Add state for dpr, default to 1 for SSR
   const [dpr, setDpr] = useState(1);
 
+  // Add state for waveColor to allow randomization
+  const [currentWaveColor, setCurrentWaveColor] =
+    useState<[number, number, number]>(waveColor);
+
   useEffect(() => {
     // Only runs on client
     setDpr(window.devicePixelRatio || 1);
   }, []);
 
+  const randomizeColor = () => {
+    setCurrentWaveColor([Math.random(), Math.random(), Math.random()]);
+  };
+
   return (
-    <Canvas
-      className="relative h-full w-full"
-      camera={{ position: [0, 0, 6] }}
-      dpr={dpr}
-      gl={{ antialias: true, preserveDrawingBuffer: true }}>
-      <DitheredWaves
-        waveSpeed={waveSpeed}
-        waveFrequency={waveFrequency}
-        waveAmplitude={waveAmplitude}
-        waveColor={waveColor}
-        colorNum={colorNum}
-        pixelSize={pixelSize}
-        disableAnimation={disableAnimation}
-        enableMouseInteraction={enableMouseInteraction}
-        mouseRadius={mouseRadius}
-      />
-    </Canvas>
+    <div className="pointer-events-none absolute inset-0 h-full w-full">
+      <button
+        className="pointer-events-auto absolute top-4 right-4 z-10 flex cursor-pointer items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900/80 p-2 shadow-lg transition hover:bg-zinc-800/90 hover:shadow-xl focus:ring-2 focus:ring-zinc-400 focus:outline-none"
+        onClick={randomizeColor}
+        type="button"
+        aria-label="Randomize Wave Color">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="lucide lucide-paintbrush-icon text-zinc-300">
+          <path d="m14.622 17.897-10.68-2.913" />
+          <path d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z" />
+          <path d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15" />
+        </svg>
+      </button>
+      <Canvas
+        className="relative h-full w-full"
+        camera={{ position: [0, 0, 6] }}
+        dpr={dpr}
+        gl={{ antialias: true, preserveDrawingBuffer: true }}>
+        <DitheredWaves
+          waveSpeed={waveSpeed}
+          waveFrequency={waveFrequency}
+          waveAmplitude={waveAmplitude}
+          waveColor={currentWaveColor}
+          colorNum={colorNum}
+          pixelSize={pixelSize}
+          disableAnimation={disableAnimation}
+          enableMouseInteraction={enableMouseInteraction}
+          mouseRadius={mouseRadius}
+        />
+      </Canvas>
+    </div>
   );
 }
