@@ -1,14 +1,26 @@
 ---
 import TargetCursor from './TargetCursor';
+
+let isMobile = false;
+if (typeof window !== 'undefined') {
+  isMobile =
+    /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      window.navigator.userAgent
+    );
+}
 ---
 
 <div class="fixed inset-0 z-10 flex items-center justify-center">
-  <TargetCursor
-    spinDuration={2}
-    hideDefaultCursor={true}
-    className="pointer-events-none"
-    client:load
-  />
+  {
+    !isMobile && (
+      <TargetCursor
+        spinDuration={2}
+        hideDefaultCursor={true}
+        className="pointer-events-none"
+        client:load
+      />
+    )
+  }
   <div
     class="pointer-events-auto flex flex-col items-center justify-center space-y-6">
     <div>
@@ -25,7 +37,7 @@ import TargetCursor from './TargetCursor';
     <div class="mt-4 flex space-x-12">
       <a
         href="https://github.com/mihirsd"
-        class="cursor-target transition hover:text-blue-500"
+        class="cursor-target transition hover:text-[#8257e6]"
         aria-label="GitHub"
         target="_blank"
         rel="noopener">
@@ -48,7 +60,7 @@ import TargetCursor from './TargetCursor';
       </a>
       <a
         href="https://linkedin.com/in/mihirsd"
-        class="cursor-target transition hover:text-blue-500"
+        class="cursor-target transition hover:text-[#0a66c2]"
         aria-label="LinkedIn"
         target="_blank"
         rel="noopener">
@@ -72,7 +84,7 @@ import TargetCursor from './TargetCursor';
       </a>
       <a
         href="mailto:mihir@mihirdesai.net"
-        class="cursor-target transition hover:text-blue-500"
+        class="cursor-target transition hover:text-[#e63946]"
         aria-label="Email">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -92,3 +104,7 @@ import TargetCursor from './TargetCursor';
     </div>
   </div>
 </div>
+<style>
+  /* ...existing code... */
+  /* Optionally, you can add more custom hover styles here if needed */
+</style>
