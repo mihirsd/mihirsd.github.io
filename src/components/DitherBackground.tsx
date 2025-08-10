@@ -322,42 +322,57 @@ export default function Dither({
   // Add state for dpr, default to 1 for SSR
   const [dpr, setDpr] = useState(1);
 
-  // Add state for waveColor to allow randomization
+  // State for color transition
   const [currentWaveColor, setCurrentWaveColor] =
     useState<[number, number, number]>(waveColor);
+  const [targetWaveColor, setTargetWaveColor] =
+    useState<[number, number, number]>(waveColor);
+  const [transitionT, setTransitionT] = useState(0);
+
+  // Duration of color transition in seconds
+  const COLOR_TRANSITION_DURATION = 3;
 
   useEffect(() => {
-    // Only runs on client
     setDpr(window.devicePixelRatio || 1);
   }, []);
 
-  const randomizeColor = () => {
-    setCurrentWaveColor([Math.random(), Math.random(), Math.random()]);
-  };
+  // Pick a new random color as the next target
+  const pickRandomColor = () =>
+    [Math.random(), Math.random(), Math.random()] as [number, number, number];
+
+  // Start a new transition when the previous one completes
+  useEffect(() => {
+    if (transitionT >= 1) {
+      setCurrentWaveColor(targetWaveColor);
+      setTargetWaveColor(pickRandomColor());
+      setTransitionT(0);
+    }
+  }, [transitionT, targetWaveColor]);
+
+  // Animate color transition
+  useEffect(() => {
+    let frame: number;
+    let lastTime = performance.now();
+    function animate(now: number) {
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+      setTransitionT((t) => Math.min(1, t + dt / COLOR_TRANSITION_DURATION));
+      frame = requestAnimationFrame(animate);
+    }
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // Interpolate color for smooth transition
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const interpolatedColor: [number, number, number] = [
+    lerp(currentWaveColor[0], targetWaveColor[0], transitionT),
+    lerp(currentWaveColor[1], targetWaveColor[1], transitionT),
+    lerp(currentWaveColor[2], targetWaveColor[2], transitionT),
+  ];
 
   return (
     <div className="pointer-events-none absolute inset-0 h-full w-full">
-      <button
-        className="pointer-events-auto absolute top-4 right-4 z-10 flex cursor-pointer items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900/80 p-2 shadow-lg transition hover:bg-zinc-800/90 hover:shadow-xl focus:ring-2 focus:ring-zinc-400 focus:outline-none"
-        onClick={randomizeColor}
-        type="button"
-        aria-label="Randomize Wave Color">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="lucide lucide-paintbrush-icon text-zinc-300">
-          <path d="m14.622 17.897-10.68-2.913" />
-          <path d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z" />
-          <path d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15" />
-        </svg>
-      </button>
       <Canvas
         className="relative h-full w-full"
         camera={{ position: [0, 0, 6] }}
@@ -367,7 +382,7 @@ export default function Dither({
           waveSpeed={waveSpeed}
           waveFrequency={waveFrequency}
           waveAmplitude={waveAmplitude}
-          waveColor={currentWaveColor}
+          waveColor={interpolatedColor}
           colorNum={colorNum}
           pixelSize={pixelSize}
           disableAnimation={disableAnimation}
